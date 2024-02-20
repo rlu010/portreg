@@ -1,5 +1,8 @@
 package no.ralun.portreg.service
 
+import no.ralun.portreg.persistence.Port
+import no.ralun.portreg.persistence.PortRepository
+import no.ralun.portreg.util.mapToEntities
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -9,17 +12,23 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 
 @Service
-class PortService {
+class PortService(private val portRepository: PortRepository) {
     private final val exchangeStrategies = ExchangeStrategies.builder()
             .codecs { configurer ->
-                configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024) // 16 MB
+                configurer.defaultCodecs().maxInMemorySize(2 * 1024 * 1024) // 16 MB
             }.build()
 
     private val webClient: WebClient = WebClient.builder()
             .exchangeStrategies(exchangeStrategies)
             .build()
 
-    fun findAllNorwegianPorts(url: String): List<Map<String, String>> {
+    fun findAllNorwegianPorts(url: String): List<Port> {
+        val allStoredPorts = portRepository.findAll()
+
+        if (allStoredPorts.isNotEmpty()){
+            return allStoredPorts
+        }
+
         val table = fetchDatatableContent(url).block()?.select("tbody")?.first()
                 ?: throw IllegalStateException("No data retrieved for UNECE webpage!")
 
@@ -35,9 +44,13 @@ class PortService {
                 header to (rowVals.getOrNull(index)?.text() ?: "")
             }.toMap()
         }
-                .filter { row -> row["Function"]?.contains("1") == true }
+                .filter {
+                    row -> row["Function"]?.contains("1") == true && row["Coordinates"]?.isNotBlank() ?: false }
 
-        return tableData
+        val allPorts = mapToEntities(tableData)
+        portRepository.saveAll(allPorts)
+
+        return allPorts
     }
 
     fun retrieveHeaders(rows: Elements?): List<String> {
@@ -54,8 +67,6 @@ class PortService {
                 .map { responseBody ->
                     val document = Jsoup.parse(responseBody)
                     document.select("table")[2]
-
-                    //firstTable?.outerHtml() ?: "No table found in the document"
                 }
     }
 }
