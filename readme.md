@@ -1,14 +1,6 @@
 # README 
-
-- [x] Lag helloWorld endepunt
-- [x] Hent data fra locodes, map til entitet
-- [x] Print ut alle som er havner (function = 1) 
-- [x] Konverter fra grader-minutter til lat/lon 
-- [ ] Lagre til postgres database 
-- [ ] GET endepunkt basert på LOCODE 
-- [ ] GET for nærmeste port, basert på en possisjon (lat/lon) 
-- [ ] GET for n nærmeste ports gitt en possisjon (lat/lon)
-
+## Portreg 
+Tjeneste som holder en oppdatert liste over norske havner.
 
 ### For lokal kjøring 
 Start en postgres-base   
@@ -30,3 +22,14 @@ LAT decimal,
 LON decimal
 );
 ```
+
+
+### TODO
+- [x] Lag helloWorld endepunt
+- [x] Hent data fra locodes, map til entitet
+- [x] Print ut alle som er havner (function = 1)
+- [x] Konverter fra grader-minutter til lat/lon
+- [ ] Lagre til postgres database
+- [ ] GET endepunkt basert på LOCODE
+- [ ] GET for nærmeste port, basert på en possisjon (lat/lon)
+- [ ] GET for n nærmeste ports gitt en possisjon (lat/lon)
