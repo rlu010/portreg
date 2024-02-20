@@ -7,7 +7,7 @@ import jakarta.persistence.Table
 
 
 @Entity
-@Table(name = "Port", schema = "portreg")
+@Table(name = "port", schema = "portreg")
 class Port {
 
     @Id

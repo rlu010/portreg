@@ -22,6 +22,14 @@ class PortService(private val portRepository: PortRepository) {
             .exchangeStrategies(exchangeStrategies)
             .build()
 
+    fun findPort(locode : String): Port {
+        return portRepository.findById(locode).get()
+    }
+
+    fun findClosest(lat: Double, lon: Double): Port{
+        return portRepository.findClosest(lat, lon)
+    }
+
     fun findAllNorwegianPorts(url: String): List<Port> {
         val allStoredPorts = portRepository.findAll()
 

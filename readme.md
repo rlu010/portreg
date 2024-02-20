@@ -14,6 +14,10 @@ Opprett skjema og tabell
 -- Opprett skjema 
 CREATE SCHEMA portreg;
 
+-- Installer PostgreSQL's Earthdistance Module
+CREATE EXTENSION IF NOT EXISTS cube;
+CREATE EXTENSION IF NOT EXISTS earthdistance;
+
 -- Opprett tabell
 CREATE TABLE portreg.Port (
 LOCODE VARCHAR(255) PRIMARY KEY,
@@ -29,7 +33,7 @@ LON decimal
 - [x] Hent data fra locodes, map til entitet
 - [x] Print ut alle som er havner (function = 1)
 - [x] Konverter fra grader-minutter til lat/lon
-- [ ] Lagre til postgres database
-- [ ] GET endepunkt basert på LOCODE
-- [ ] GET for nærmeste port, basert på en possisjon (lat/lon)
-- [ ] GET for n nærmeste ports gitt en possisjon (lat/lon)
+- [x] Lagre til postgres database
+- [x] GET endepunkt basert på LOCODE
+- [x] GET for nærmeste havn, basert på en posisjon (lat/lon)
+- [ ] GET for N nærmeste havner gitt en posisjon (lat/lon)

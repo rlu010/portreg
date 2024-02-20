@@ -3,24 +3,24 @@ package no.ralun.portreg.util
 import no.ralun.portreg.persistence.Port
 import java.util.*
 
-fun mapToEntities(maplist: List<Map<String,String>>): List<Port>{
-        return maplist.map { e -> mapToEntity(e) }
+fun mapToEntities(mapList: List<Map<String,String>>): List<Port>{
+        return mapList.map { e -> mapToEntity(e) }
     }
 
     fun mapToEntity(portMap: Map<String,String>): Port{
-        val locode = portMap["LOCODE"] ?: "NOCODE"
+        val loCode = portMap["LOCODE"] ?: "NOCODE"
         val name = portMap["Name"] ?: "NONAME"
         val coords = portMap["Coordinates"]?.split(" ")
         val lat = convertToDecimal(coords?.get(0) ?: "0000N")
-        val lon = convertToDecimal(coords?.get(1)?: "0000N")
+        val lon = convertToDecimal(coords?.get(1) ?: "0000N")
 
-        var port = Port()
-        port.name = name
-        port.locode = locode
-        port.latitude = lat
-        port.longitude = lon
+        val tull = Port()
+        tull.name = name
+        tull.locode = loCode.replace("\\s+".toRegex(), "")
+        tull.latitude = lat
+        tull.longitude = lon
 
-        return port
+        return tull
     }
 
 private fun convertToDecimal(coordinate: String): Double {
