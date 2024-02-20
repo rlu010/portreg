@@ -7,7 +7,7 @@ Start en postgres-base
 ``docker run -it --name local-postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:16``
 
 Koble til basen  
-``docker exec -it blissful_knuth psql -U postgres``
+``docker exec -it local-postgres psql -U postgres``
 
 Opprett skjema og tabell
 ``` sql
