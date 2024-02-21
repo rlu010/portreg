@@ -24,10 +24,20 @@ class Controller (private val portService: PortService) {
     @GetMapping("/closestPort")
     @ResponseBody()
     fun getClosestPort(
-            @RequestParam(required = true) lat: Double,
-            @RequestParam(required = true) lon: Double,
-    ): Port{
+            @RequestParam(required = true, defaultValue = "60.3833") lat: Double,
+            @RequestParam(required = true, defaultValue = "5.3167") lon: Double,
+    ): PortRegResponse{
         return portService.findClosest(lat,lon)
+    }
+
+    @GetMapping("/closestPorts")
+    @ResponseBody()
+    fun getClosestPorts(
+        @RequestParam(required = true, defaultValue = "60.3833") lat: Double,
+        @RequestParam(required = true, defaultValue = "5.3167") lon: Double,
+        @RequestParam(required = true, value = "Number of ports") n: Int
+    ): List<PortRegResponse>{
+        return portService.findClosest(lat,lon, n)
     }
 
 

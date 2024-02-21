@@ -26,7 +26,11 @@ LAT decimal,
 LON decimal
 );
 ```
+Start applikasjonen   
+`mvn spring-boot:run`
 
+Swagger dokumentasjon er tilgjengelig på   
+http://localhost:8080/swagger-ui/index.html#
 
 ### TODO
 - [x] Lag helloWorld endepunt
@@ -36,4 +40,6 @@ LON decimal
 - [x] Lagre til postgres database
 - [x] GET endepunkt basert på LOCODE
 - [x] GET for nærmeste havn, basert på en posisjon (lat/lon)
-- [ ] GET for N nærmeste havner gitt en posisjon (lat/lon)
+- [x] GET for N nærmeste havner gitt en posisjon (lat/lon)
+- [x] Regn ut avstand til nærmeste havnen
+- [x] Regn ut avstand til de nærmeste havnene 

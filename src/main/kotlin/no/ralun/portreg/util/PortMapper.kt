@@ -1,7 +1,10 @@
 package no.ralun.portreg.util
 
+import no.ralun.portreg.api.PortRegResponse
+import no.ralun.portreg.api.Position
 import no.ralun.portreg.persistence.Port
 import java.util.*
+import kotlin.math.*
 
 fun mapToEntities(mapList: List<Map<String,String>>): List<Port>{
         return mapList.map { e -> mapToEntity(e) }
@@ -23,6 +26,19 @@ fun mapToEntities(mapList: List<Map<String,String>>): List<Port>{
         return tull
     }
 
+fun mapToPortRegResponse(portEntites: List<Port>, lat: Double, lon: Double): List<PortRegResponse>{
+    val portResponses = portEntites.map { port -> mapToPortRegResponse(port,lat, lon) }
+
+    return portResponses
+}
+
+fun mapToPortRegResponse(portEntity: Port, lat: Double, lon: Double): PortRegResponse{
+    val distance = calculateDistance(portEntity.latitude, portEntity.longitude, lat, lon)
+    val position = Position(portEntity.latitude, portEntity.longitude)
+
+    return PortRegResponse(portEntity.locode, portEntity.name, distance, position)
+}
+
 private fun convertToDecimal(coordinate: String): Double {
     val isLongitude = coordinate.length == 6
 
@@ -40,5 +56,19 @@ private fun convertToDecimal(coordinate: String): Double {
         'S', 'W' -> -formatted.toDouble()
         else -> throw IllegalArgumentException("Invalid direction indicator: $direction")
     }
+
+
+}
+
+private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+    val earthRadius = 3440.0 // Earth radius in nautical miles
+
+    val dLat = Math.toRadians(lat2 - lat1)
+    val dLon = Math.toRadians(lon2 - lon1)
+    val a = sin(dLat / 2).pow(2) + cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) * sin(dLon / 2).pow(2)
+    val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    val distance = earthRadius * c // Distance in nautical miles
+    return String.format(Locale.US,"%.1f", distance).toDouble()
 }
 

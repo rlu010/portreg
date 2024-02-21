@@ -1,8 +1,10 @@
 package no.ralun.portreg.service
 
+import no.ralun.portreg.api.PortRegResponse
 import no.ralun.portreg.persistence.Port
 import no.ralun.portreg.persistence.PortRepository
 import no.ralun.portreg.util.mapToEntities
+import no.ralun.portreg.util.mapToPortRegResponse
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -22,12 +24,18 @@ class PortService(private val portRepository: PortRepository) {
             .exchangeStrategies(exchangeStrategies)
             .build()
 
-    fun findPort(locode : String): Port {
-        return portRepository.findById(locode).get()
+    fun findPort(loCode : String): Port {
+        return portRepository.findById(loCode).get()
     }
 
-    fun findClosest(lat: Double, lon: Double): Port{
-        return portRepository.findClosest(lat, lon)
+    fun findClosest(lat: Double, lon: Double): PortRegResponse{
+        val nearestPort =portRepository.findClosest(lat, lon, 1).first()
+        return mapToPortRegResponse(nearestPort, lat, lon)
+    }
+
+    fun findClosest(lat: Double, lon: Double, n: Int): List<PortRegResponse>{
+        val nearestPorts = portRepository.findClosest(lat, lon, n)
+        return mapToPortRegResponse(nearestPorts,lat,lon)
     }
 
     fun findAllNorwegianPorts(url: String): List<Port> {

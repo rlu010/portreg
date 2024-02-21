@@ -5,4 +5,4 @@ data class PortRegResponse(
         val name: String,
         val distance: Double,
         val position: Position
-        )
+)

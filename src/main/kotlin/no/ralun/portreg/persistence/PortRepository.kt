@@ -12,7 +12,7 @@ interface PortRepository: JpaRepository<Port, String> {
                     ) as distance
                     FROM portreg.port
                     ORDER BY distance ASC
-                    LIMIT 1
+                    LIMIT ?3
             """)
-    fun findClosest(lat: Double, lon: Double): Port
+    fun findClosest(lat: Double, lon: Double, n: Int): List<Port>
 }
