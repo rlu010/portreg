@@ -1,5 +1,4 @@
-# README 
-## Portreg 
+# Portreg 
 Tjeneste som holder en oppdatert liste over norske havner.
 
 ### For lokal kjøring 
@@ -30,7 +29,7 @@ Start applikasjonen
 `mvn spring-boot:run`
 
 Swagger dokumentasjon er tilgjengelig på   
-http://localhost:8080/swagger-ui/index.html#
+http://localhost:8080/portreg/swagger-ui/index.html#/
 
 ### TODO
 - [x] Lag helloWorld endepunt
