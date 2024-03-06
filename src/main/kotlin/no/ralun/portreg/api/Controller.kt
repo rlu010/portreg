@@ -14,7 +14,7 @@ class Controller (private val portService: PortService) {
 
     @GetMapping("/allNorwegianPorts")
     fun getAllPorts():List<Port>? {
-        return portService.findAllNorwegianPorts("https://service.unece.org/trade/locode/no.htm")
+        return portService.findAllNorwegianPorts()
     }
     @GetMapping("/norwegianPort{locode}")
     fun getPort(@PathVariable locode : String):Port ? {

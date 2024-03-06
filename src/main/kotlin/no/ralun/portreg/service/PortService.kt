@@ -24,6 +24,8 @@ class PortService(private val portRepository: PortRepository) {
             .exchangeStrategies(exchangeStrategies)
             .build()
 
+    private final val UNLOCODE_URL = "https://service.unece.org/trade/locode/no.htm"
+
     fun findPort(loCode : String): Port {
         return portRepository.findById(loCode).get()
     }
@@ -38,14 +40,14 @@ class PortService(private val portRepository: PortRepository) {
         return mapToPortRegResponse(nearestPorts,lat,lon)
     }
 
-    fun findAllNorwegianPorts(url: String): List<Port> {
+    fun findAllNorwegianPorts(): List<Port> {
         val allStoredPorts = portRepository.findAll()
 
         if (allStoredPorts.isNotEmpty()){
             return allStoredPorts
         }
 
-        val table = fetchDatatableContent(url).block()?.select("tbody")?.first()
+        val table = fetchDatatableContent(UNLOCODE_URL).block()?.select("tbody")?.first()
                 ?: throw IllegalStateException("No data retrieved for UNECE webpage!")
 
         val rows = table.select("tbody").first()?.select("tr")
