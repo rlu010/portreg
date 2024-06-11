@@ -1,8 +1,11 @@
 package no.ralun.portreg.service
 
+import jakarta.transaction.Transactional
 import no.ralun.portreg.api.PortRegResponse
 import no.ralun.portreg.persistence.Port
 import no.ralun.portreg.persistence.PortRepository
+import no.ralun.portreg.persistence.PortSyncLog
+import no.ralun.portreg.persistence.PortSyncLogRepository
 import no.ralun.portreg.util.mapToEntities
 import no.ralun.portreg.util.mapToPortRegResponse
 import org.jsoup.Jsoup
@@ -12,9 +15,13 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
+import java.time.Instant
 
 @Service
-class PortService(private val portRepository: PortRepository) {
+class PortService(
+    private val portRepository: PortRepository,
+    private val portSyncLogRepository: PortSyncLogRepository
+) {
     private final val exchangeStrategies = ExchangeStrategies.builder()
             .codecs { configurer ->
                 configurer.defaultCodecs().maxInMemorySize(2 * 1024 * 1024) // 16 MB
@@ -24,7 +31,7 @@ class PortService(private val portRepository: PortRepository) {
             .exchangeStrategies(exchangeStrategies)
             .build()
 
-    private final val UNLOCODE_URL = "https://service.unece.org/trade/locode/no.htm"
+    private var hasPorts = portRepository.existsBy()
 
     fun findPort(loCode : String): Port {
         return portRepository.findById(loCode).get()
@@ -40,14 +47,14 @@ class PortService(private val portRepository: PortRepository) {
         return mapToPortRegResponse(nearestPorts,lat,lon)
     }
 
-    fun findAllNorwegianPorts(): List<Port> {
-        val allStoredPorts = portRepository.findAll()
 
-        if (allStoredPorts.isNotEmpty()){
-            return allStoredPorts
+    @Transactional
+    fun addPortsForCountry(alpha2CountryCode : String) {
+        if (portRepository.existsPortByLocodeStartsWith(alpha2CountryCode)){
+            return
         }
 
-        val table = fetchDatatableContent(UNLOCODE_URL).block()?.select("tbody")?.first()
+        val table = fetchDatatableContent("https://service.unece.org/trade/locode/${alpha2CountryCode}.htm").block()?.select("tbody")?.first()
                 ?: throw IllegalStateException("No data retrieved for UNECE webpage!")
 
         val rows = table.select("tbody").first()?.select("tr")
@@ -67,8 +74,11 @@ class PortService(private val portRepository: PortRepository) {
 
         val allPorts = mapToEntities(tableData)
         portRepository.saveAll(allPorts)
+        portSyncLogRepository.save(PortSyncLog(alpha2CountryCode.uppercase(), "SUCCESS", Instant.now()))
+    }
 
-        return allPorts
+    fun deleteAllPorts(){
+        portRepository.deleteAll()
     }
 
     fun retrieveHeaders(rows: Elements?): List<String> {

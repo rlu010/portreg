@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive World Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .content {
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<!--<div id="toggle-dark-mode">Toggle Dark Mode</div> -->
+
+<div class="content">
+    <label class="toggle-button">
+        <input type="checkbox" id="modeToggle">
+        <span class="slider"></span>
+    </label>
+    <h1>Toggle Dark Mode / Bright Mode</h1>
+</div>
+
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/portreg/js/map.js"></script>
+</body>
+</html>

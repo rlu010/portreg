@@ -4,6 +4,7 @@ import no.ralun.portreg.persistence.Port
 import no.ralun.portreg.service.PortService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
@@ -12,10 +13,12 @@ import org.springframework.web.bind.annotation.RestController
 class Controller (private val portService: PortService) {
 
 
-    @GetMapping("/allNorwegianPorts")
-    fun getAllPorts():List<Port>? {
-        return portService.findAllNorwegianPorts()
+    @PostMapping("/addCountry")
+    //@ResponseBody
+    fun addCountry(@RequestParam(value = "countryIso2Code", required = true) countryIso2Code: String){
+        portService.addPortsForCountry(countryIso2Code.lowercase())
     }
+
     @GetMapping("/norwegianPort{locode}")
     fun getPort(@PathVariable locode : String):Port ? {
         return portService.findPort(locode)

@@ -15,4 +15,9 @@ interface PortRepository: JpaRepository<Port, String> {
                     LIMIT ?3
             """)
     fun findClosest(lat: Double, lon: Double, n: Int): List<Port>
+    fun existsBy(): Boolean
+
+    fun findPortByLocodeStartsWith(startString: String): List<Port>
+
+    fun existsPortByLocodeStartsWith(startString: String): Boolean
 }
